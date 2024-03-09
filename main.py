@@ -3,7 +3,7 @@ import os
 import ipaddress
 import json
 
-from cdktf import App, TerraformStack, S3Backend
+from cdktf import App, TerraformStack, S3Backend, S3BackendEndpointConfig
 from constructs import Construct
 
 from imports.cloudflare.provider import CloudflareProvider
@@ -41,13 +41,14 @@ class MyStack(TerraformStack):
                   bucket=S3_BUCKET,
                   key="terraform.tfstate",
                   encrypt=True,
-                  endpoint=S3_ENDPOINT,
+                  endpoints=S3BackendEndpointConfig(
+                      s3=S3_ENDPOINT
+                  ),
                   access_key=S3_ACCESS_KEY,
                   secret_key=S3_SECRET_KEY,
                   region="us-east-01",
                   skip_region_validation=True,
                   skip_credentials_validation=True,
-                  profile="CDKTF",
                   )
 
         for name, record in target_mapping.items():

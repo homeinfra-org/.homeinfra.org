@@ -57,6 +57,7 @@ jobs:
 
     - name: cdktf apply
       run: npx cdktf-cli apply -auto-approve
+      if: github.event_name == 'push'
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         ZONE_ID: ${{ secrets.ZONE_ID }}
