@@ -1,4 +1,4 @@
-name: CDKTF Diff
+name: CDKTF
 
 on:
   push:
@@ -29,6 +29,16 @@ jobs:
       run: npx cdktf-cli get
 
 
+    - name: cdktf diff
+      run: echo "::set-output name=diff::$(npx cdktf-cli diff)"
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        ZONE_ID: ${{ secrets.ZONE_ID }}
+        S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+        S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+        S3_BUCKET: ${{ secrets.S3_BUCKET }}
+
     - name: Comment on pull request
       uses: actions/github-script@v4
       if: github.event_name == 'pull_request'
@@ -47,3 +57,10 @@ jobs:
 
     - name: cdktf apply
       run: npx cdktf-cli apply -auto-approve
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        ZONE_ID: ${{ secrets.ZONE_ID }}
+        S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+        S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+        S3_BUCKET: ${{ secrets.S3_BUCKET }}
