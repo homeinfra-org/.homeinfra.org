@@ -1,0 +1,49 @@
+name: CDKTF Diff
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18
+    - name: Install Dependencies
+      run: pip install cdktf
+    - name: cdktf get
+      run: npx cdktf-cli get
+
+
+    - name: Comment on pull request
+      uses: actions/github-script@v4
+      if: github.event_name == 'pull_request'
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { owner, repo } = context.repo;
+          const { number } = context.issue;
+          const diff = context.payload.workflow_run.outputs.diff;
+          github.issues.createComment({
+            owner,
+            repo,
+            issue_number: number,
+            body: `CDKTF Diff:\n\`\`\`${diff}\`\`\``
+          });
+
+    - name: cdktf apply
+      run: npx cdktf-cli apply -auto-approve
