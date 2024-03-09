@@ -47,6 +47,8 @@ class MyStack(TerraformStack):
                   access_key=S3_ACCESS_KEY,
                   secret_key=S3_SECRET_KEY,
                   region="us-east-01",
+                  skip_requesting_account_id=True,
+                  skip_metadata_api_check=True,
                   skip_region_validation=True,
                   skip_credentials_validation=True,
                   )
